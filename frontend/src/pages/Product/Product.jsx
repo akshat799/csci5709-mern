@@ -1,44 +1,71 @@
-import React from 'react'
+import React , {useState, useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/Header'
-import {Container, Button, Row, Col, Card } from "react-bootstrap";
+import {Container, Button, Row, Col, Spinner} from "react-bootstrap";
 import EmptyComponent from '../../components/EmptyComponent';
-import AddProduct from './AddProduct';
 import ProductCard from '../../components/ProductCard';
+import ProductModal from './ProductModal';
+import { fetchProducts, deleteProduct, addProduct, updateProduct } from '../../redux/actions/productActions';
 
 export default function Product() {
-  const sampleProducts = [
-    {
-      id: 1,
-      name: "Wireless Headphones",
-      description: "Noise Cancelling over-ear headphones",
-      banner: "https://res.cloudinary.com/da3w329cx/image/upload/v1683056487/samples/landscapes/nature-mountains.jpg",
-      price: 120
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      description: "Smart wearable with health tracking",
-      banner: "https://res.cloudinary.com/da3w329cx/image/upload/v1683056500/cld-sample-5.jpg",
-      price: 80
-    },
-    {
-      id: 3,
-      name: "Laptop",
-      description: "14-inch Full HD display, 256GB SSD",
-      banner: "https://res.cloudinary.com/da3w329cx/image/upload/v1683056499/cld-sample-3.jpg",
-      price: 600
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const dispatch = useDispatch();
+
+
+   const {item, loading} = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+    console.log("Fetching products...");
+  }, [dispatch]);
+
+
+  const handleAdd  = () => {
+    setShowModal(true);
+    setEditItem(null);
+  }
+
+  const handleEdit = (product) => {
+    setShowModal(true);
+    setEditItem(product);
+  }
+
+  const handleSubmit = (values) => {
+    if (editItem) {
+      console.log("Updating product:", values);
+      dispatch(updateProduct(values));
+    } else {
+      console.log("Adding new product:", values);
+      dispatch(addProduct(values));
+      
     }
-  ];
+    setShowModal(false);
+  }
+
+  const handleDelete = (id) => {
+    // Delete product logic
+    console.log("Deleting product with id:", id);
+    dispatch(deleteProduct(id));
+
+  }
+
   return (
     <>
         <section>
             <Header />
             <Container className="mt-4">
               <div className='d-flex justify-content-end mb-4'>
-                <AddProduct />
+                <Button variant='primary' onClick={handleAdd}>
+                    <i className='bi bi-plus-circle me-2'></i>Add Product
+                </Button>
               </div>
 
-              {sampleProducts.length === 0 ? (
+              {loading ? (
+                <div className='d-flex justify-content-center align-items-center' style={{ minHeight: "200px" }}>
+                  <Spinner animation="border" variant="primary" />
+                </div>
+              ) : item.length === 0 ? (
                 <div 
                   className='d-flex justify-content-center align-item-center'
                   style={{  minHeight: "200px"  }}
@@ -48,16 +75,38 @@ export default function Product() {
               ) : (
                 
                 <Row className="g-4">
-                  {sampleProducts.map((product) => {
+                  {item.map((product) => {
                     return (
-                      <Col key={product.id} xs={12} sm={6} md={3} lg={3}>
-                        <ProductCard product={product} />
+                      <Col key={product._id} xs={12} sm={6} md={3} lg={3}>
+                        <ProductCard product={product} onEdit={() => {
+                          handleEdit(product);
+                        }}
+                        onDelete={() => {
+                          handleDelete(product._id);
+                        }}
+                        />
                       </Col>
                     );
                   })}
                 </Row>
               )}
             </Container>
+            <ProductModal 
+            show={showModal} 
+            onClose={() => {
+              setShowModal(false)
+            }}
+            initialValues={editItem ||
+                {
+                    title: "",
+                    image: "",
+                    description: "",
+                    price: ""
+                }
+            }
+            onSubmit={handleSubmit}
+            isEdit={!!editItem}
+            />
         </section>
     </>
   )

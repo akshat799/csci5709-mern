@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 
-export default function ProductModal({
+export default function ModalComponent({
     show,
     onClose,
     onSubmit,
@@ -12,7 +12,7 @@ export default function ProductModal({
   return (
     <Modal show={show} onHide={onClose}>
         <Modal.Header closeButton>
-            <Modal.Title>{title || "Modal"}</Modal.Title>
+            <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>{children}</Modal.Body>
