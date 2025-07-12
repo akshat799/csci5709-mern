@@ -2,11 +2,17 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import logo from '../../assets/logo.png';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { signup } from '../../redux/actions/authActions';
 
 export default function Signup() {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const SignupSchema = Yup.object().shape({
-        fullname: Yup.string()
+        name: Yup.string()
             .required('Full name is required')
             .min(3, 'Full name must be at least 3 characters'),
         email: Yup.string()
@@ -37,29 +43,36 @@ export default function Signup() {
             <h3 className='mb-4 text-center'>Sign Up</h3>
             <Formik
                 initialValues={{
-                    fullname: '',
+                    name: '',
                     email: '',
                     phone: '',
                     password: '',
                     confirmPassword: ''
                 }}
                 validationSchema={SignupSchema}
-                onSubmit={(values, { resetForm }) => {
-                    console.log('Form submitted:', values);
-                    resetForm();
+                onSubmit={async (values, { setSubmitting, resetForm }) => {
+                    console.log('Form values:', values);
+                    const success = await dispatch(signup(values));
+
+                    if (success) {
+                        resetForm();
+                        navigate('/products');
+                    }
+
+                    setSubmitting(false);
                 }}
             >
                 {({isSubmitting}) => (
                     <Form>
                         <div className='mb-3'>
-                            <label className='form-label'>Full Name</label>
+                            <label className='form-label'>Name</label>
                             <Field
                                 type='text'
-                                name='fullname'
+                                name='name'
                                 className='form-control'
                                 placeholder='Enter your full name'
                                 />
-                            <ErrorMessage name='fullname' component='div' className='text-danger' />
+                            <ErrorMessage name='name' component='div' className='text-danger' />
                         </div>
                         <div className='mb-3'>
                             <label className='form-label'>Email</label>

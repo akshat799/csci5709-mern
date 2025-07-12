@@ -23,7 +23,7 @@ export const DELETE_PRODUCT_FAILURE = 'DELETE_PRODUCT_FAILURE';
 export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_REQUEST });
     try {
-        const response = await fetch('http://localhost:5400/api/products');
+        const response = await fetch('https://csci5709-assignment2.onrender.com/api/products');
         const data = await response.json();
         dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: data.data });
     } catch (error) {
@@ -34,7 +34,7 @@ export const fetchProducts = () => async (dispatch) => {
 export const addProduct = (product) => async (dispatch) => {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
     try {
-        const response = await fetch('http://localhost:5400/api/products', {
+        const response = await fetch('https://csci5709-assignment2.onrender.com/api/products', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const updateProduct = (product) => async (dispatch) => {
     dispatch({ type: UPDATE_PRODUCT_REQUEST });
     try {
         
-        const response = await fetch(`http://localhost:5400/api/products/${product._id}`, {
+        const response = await fetch(`https://csci5709-assignment2.onrender.com/api/products/${product._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export const updateProduct = (product) => async (dispatch) => {
 export const deleteProduct = (id) => async (dispatch) => {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
     try {
-        await fetch(`http://localhost:5400/api/products/${id}`, {
+        await fetch(`https://csci5709-assignment2.onrender.com/api/products/${id}`, {
             method: 'DELETE',
         });
         dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: id });

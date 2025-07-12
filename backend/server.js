@@ -6,7 +6,7 @@ import productRoutes from './routes/product.route.js';
 import authRoutes from './routes/auth.route.js';
 
 const app = express();
-const PORT = 5400;
+const PORT = process.env.PORT || 5400;
 
 app.use(cors());
 app.use(express.json());

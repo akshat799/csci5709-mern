@@ -8,6 +8,7 @@ import Contact from './pages/Contact/Contact';
 import { ToastContainer } from  'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Signup from './pages/Auths/Signup';
+import Login from './pages/Auths/Login';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/products" element={<Product></Product>}></Route>
         <Route path="/contacts" element={<Contact></Contact>}></Route>
         <Route path="/register" element={<Signup />}></Route>
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </Router>
     <ToastContainer
